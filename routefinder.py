@@ -23,27 +23,32 @@ if G.is_directed():
 else:
     print("Graph is already undirected.")
 
-# Define Start and End Coordinates
-start_latitude = 42.3555   # Boston Common
-start_longitude = -71.0656
-
-end_latitude = 42.3467     # Fenway Park
-end_longitude = -71.0972
-
+def get_address_input(prompt):
+    while True:
+        address = input(prompt).strip()
+        if address:
+            return address
+        else:
+            print("cannot be empty")
+start_address = get_address_input("start: ")
+end_address = get_address_input("end: ")
 # Find the nearest nodes to the start and end points
 try:
-    start_node = ox.nearest_nodes(G, start_longitude, start_latitude)
-    end_node = ox.nearest_nodes(G, end_longitude, end_latitude)
-    print(f"Start Node: {start_node}")
-    print(f"End Node: {end_node}")
-except ImportError as e:
-    print(f"Import Error: {e}")
-    print("Please ensure all required dependencies are installed.")
-    exit(1)
+    start_location = ox.geocode(start_address)
+    end_location = ox.geocode(end_address)
+    print(f"Start Node: {start_location}")
+    print(f"End Node: {end_location}")
+
 except Exception as e:
     print(f"An unexpected error occurred while finding nearest nodes: {e}")
     exit(1)
 
+try:
+    start_node = ox.nearest_nodes(G, start_location[1], start_location[0])
+    end_node = ox.nearest_nodes(G, end_location[1], end_location[0])
+except Exception as e:
+    print("error")
+    exit(1)
 # Compute the shortest path between start and end nodes
 try:
     route = nx.shortest_path(G, start_node, end_node, weight='length')
