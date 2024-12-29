@@ -3,7 +3,8 @@ import networkx as nx
 import matplotlib.pyplot as plt
 import traceback
 import copy
-# Configure OSMnx settings
+
+
 ox.settings.use_cache = True
 ox.settings.log_console = True
 
